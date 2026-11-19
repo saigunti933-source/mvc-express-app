@@ -7,6 +7,7 @@ const connectDB = async (mongoUri) => {
   }
 
   await mongoose.connect(mongoUri);
+
   console.log("Connected to MongoDB");
 };
 

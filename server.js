@@ -7,8 +7,12 @@ import movieRoutes from "./routes/movieRoutes.js";
 dotenv.config();
 
 const app = express();
+
 const PORT = process.env.PORT || 8000;
-const MONGO_URI = process.env.MONGO_URI;
+
+// Use the selected MongoDB connection
+const MONGO_URI =
+  process.env.MONGO_URI || process.env.DOCKER_MONGODB_URI;
 
 app.use(express.json());
 
@@ -21,13 +25,15 @@ app.get("/", (req, res) => {
 app.use("/api/v1/movies", movieRoutes);
 
 app.use((req, res) => {
-  res.status(404).json({ message: "Route Not Found" });
+  res.status(404).json({
+    message: "Route Not Found",
+  });
 });
 
 app.use((err, req, res, next) => {
-  const status = err.status || 500;
-  const message = err.message || "Internal Server Error";
-  res.status(status).json({ message });
+  res.status(err.status || 500).json({
+    message: err.message || "Internal Server Error",
+  });
 });
 
 const startServer = async () => {
